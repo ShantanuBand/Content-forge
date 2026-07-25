@@ -118,9 +118,9 @@
 
 /* Individual Word Line */
 .loader-word-line {
-  font-size: clamp(2.4rem, 8.5vw, 8.2rem);
+  font-size: clamp(3rem, 9.8vw, 8.8rem);
   font-weight: 900;
-  line-height: 0.94;
+  line-height: 0.93;
   letter-spacing: -0.04em;
   text-transform: uppercase;
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -149,7 +149,7 @@
 
 /* CONTENTFORGE Gradient & Glow State */
 .loader-word-line.contentforge-gradient {
-  font-size: clamp(2.5rem, 9.2vw, 9.2rem);
+  font-size: clamp(3.2rem, 10.5vw, 9.8rem);
   background: linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #C084FC 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -204,15 +204,15 @@
     display: none;
   }
   .loader-typography-stage {
-    padding: 0 18px;
+    padding: 0 20px;
     max-width: 100%;
   }
   .loader-word-line {
-    font-size: clamp(2rem, 8vw, 4.5rem);
+    font-size: clamp(2.4rem, 8.8vw, 5.5rem);
     letter-spacing: -0.03em;
   }
   .loader-word-line.contentforge-gradient {
-    font-size: clamp(2.1rem, 8.8vw, 5rem);
+    font-size: clamp(2.6rem, 9.6vw, 6rem);
   }
 }
 
@@ -222,12 +222,12 @@
     letter-spacing: 1px;
   }
   .loader-typography-stage {
-    padding: 0 14px;
+    padding: 0 16px;
   }
   .loader-word-line {
-    font-size: clamp(1.7rem, 9vw, 3.2rem);
+    font-size: clamp(2.1rem, 9.8vw, 3.8rem);
   }
   .loader-word-line.contentforge-gradient {
-    font-size: clamp(1.8rem, 9.5vw, 3.6rem);
+    font-size: clamp(2.2rem, 10.2vw, 4.2rem);
   }
 }
