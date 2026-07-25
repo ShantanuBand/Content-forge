@@ -9,16 +9,20 @@ function EditDraft() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchDraft = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const res = await axios.get(`/api/drafts/${id}`);
-        setTitle(res.data.title);
-        setContent(res.data.content);
+        setTitle(res.data.title || "");
+        setContent(res.data.content || "");
       } catch (err) {
         console.error(err);
-        alert("Failed to load draft");
+        setError(err.response?.data?.message || "Failed to load draft");
       } finally {
         setLoading(false);
       }
@@ -28,45 +32,91 @@ function EditDraft() {
   }, [id]);
 
   const handleUpdate = async () => {
+    if (!title.trim()) {
+      alert("Title cannot be empty");
+      return;
+    }
+    if (!content.trim()) {
+      alert("Content cannot be empty");
+      return;
+    }
+
     try {
+      setSaving(true);
       await axios.put(`/api/drafts/${id}`, {
-        title,
-        content
+        title: title.trim(),
+        content: content.trim()
       });
 
       alert("Draft updated successfully ✅");
       navigate(`/draft/${id}`);
     } catch (err) {
       console.error(err);
-      alert("Failed to update draft");
+      alert(err.response?.data?.message || "Failed to update draft");
+    } finally {
+      setSaving(false);
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="edit-container">
+        <p style={{ color: "#94a3b8", textAlign: "center", paddingTop: "80px" }}>Loading draft for editing...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="edit-container" style={{ textAlign: "center", paddingTop: "80px" }}>
+        <h2 style={{ color: "#ef4444", marginBottom: "16px" }}>{error}</h2>
+        <button className="back-btn-link" onClick={() => navigate("/")}>
+          ← Back to Dashboard
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Edit Draft</h2>
+    <div className="edit-container">
+      <button className="back-btn-link" onClick={() => navigate(`/draft/${id}`)}>
+        ← Cancel
+      </button>
 
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Title"
-      />
+      <div className="edit-card">
+        <h2 style={{ fontFamily: "var(--font-heading)", color: "#ffffff", marginBottom: "24px", fontSize: "24px" }}>
+          Edit Draft
+        </h2>
 
-      <br /><br />
+        <div style={{ marginBottom: "20px" }}>
+          <label style={{ display: "block", color: "#94a3b8", fontSize: "14px", marginBottom: "8px", fontWeight: 500 }}>
+            Title
+          </label>
+          <input
+            className="edit-input"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Draft Title"
+          />
+        </div>
 
-      <textarea
-        rows={12}
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="Content"
-        style={{ width: "100%" }}
-      />
+        <div style={{ marginBottom: "24px" }}>
+          <label style={{ display: "block", color: "#94a3b8", fontSize: "14px", marginBottom: "8px", fontWeight: 500 }}>
+            Content (Markdown)
+          </label>
+          <textarea
+            className="edit-textarea"
+            rows={12}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Draft Content"
+          />
+        </div>
 
-      <br /><br />
-
-      <button onClick={handleUpdate}>Save Changes</button>
+        <button className="save-changes-btn" onClick={handleUpdate} disabled={saving}>
+          {saving ? "Saving..." : "Save Changes"}
+        </button>
+      </div>
     </div>
   );
 }

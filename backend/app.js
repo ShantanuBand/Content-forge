@@ -15,7 +15,7 @@ app.use(express.json());
 app.use("/api/drafts", draftRoutes);
 app.use("/api/ai", aiRoutes);
 
-// ---------- FRONTEND SERVING (ADD THIS) ----------
+// ---------- FRONTEND SERVING ----------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -27,6 +27,13 @@ app.get("*", (req, res) => {
     path.join(__dirname, "../frontend/dist/index.html")
   );
 });
-// -----------------------------------------------
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error("Global Server Error:", err);
+  res.status(500).json({
+    message: err.message || "Internal Server Error"
+  });
+});
 
 export default app;

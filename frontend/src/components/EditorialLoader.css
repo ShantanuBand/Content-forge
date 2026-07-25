@@ -1,0 +1,203 @@
+/* =========================================================
+   ULTRA-MINIMAL EDITORIAL LOADER STYLES (#090909)
+   ========================================================= */
+
+.editorial-loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #090909;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
+  color: #ffffff;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.editorial-loader-container.fade-out {
+  opacity: 0;
+  transform: scale(1.03);
+  pointer-events: none;
+}
+
+/* Subtle 3-5% Grid Overlay */
+.loader-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Soft Purple Glow Behind Text */
+.loader-purple-glow {
+  position: absolute;
+  width: 650px;
+  height: 650px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.4) 0%, rgba(168, 85, 247, 0.18) 45%, transparent 70%);
+  filter: blur(110px);
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.25;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(0.85);
+}
+
+.loader-purple-glow.active {
+  opacity: 0.9;
+  transform: scale(1.3);
+}
+
+/* Editorial Corner Metadata */
+.loader-corner {
+  position: absolute;
+  z-index: 10;
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #a1a1aa;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-family: monospace;
+  user-select: none;
+}
+
+.loader-corner .dim {
+  color: #52525b;
+}
+
+.loader-corner.top-left {
+  top: 40px;
+  left: 48px;
+}
+
+.loader-corner.top-right {
+  top: 40px;
+  right: 48px;
+  text-align: right;
+}
+
+.loader-corner.bottom-left {
+  bottom: 40px;
+  left: 48px;
+}
+
+.loader-corner.bottom-right {
+  bottom: 40px;
+  right: 48px;
+  text-align: right;
+}
+
+/* Huge Typography Stage */
+.loader-typography-stage {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0 48px;
+  width: 100%;
+  max-width: 1150px;
+  user-select: none;
+}
+
+/* Individual Word Line */
+.loader-word-line {
+  font-size: clamp(3.2rem, 9.5vw, 8.2rem);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity, color;
+}
+
+/* Solid White State */
+.loader-word-line.solid {
+  color: #ffffff;
+  -webkit-text-stroke: 0px transparent;
+  opacity: 1;
+  transform: translateY(0);
+  animation: wordSlideUp 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Outlined Stroke State (Subtle stroke matching Norm Architects editorial style) */
+.loader-word-line.outlined {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.38);
+  opacity: 0.55;
+  transform: translateY(-4px);
+}
+
+/* CONTENTFORGE Gradient & Glow State */
+.loader-word-line.contentforge-gradient {
+  font-size: clamp(3.5rem, 10.5vw, 9.2rem);
+  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #C084FC 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 35px rgba(168, 85, 247, 0.55));
+  animation: wordSlideUpLarge 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Slide Up Entry Animation */
+@keyframes wordSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(35px) scale(0.97);
+    filter: blur(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+@keyframes wordSlideUpLarge {
+  0% {
+    opacity: 0;
+    transform: translateY(45px) scale(0.95);
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1.02);
+    filter: blur(0px);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .loader-corner.top-left,
+  .loader-corner.top-right {
+    top: 24px;
+  }
+  .loader-corner.top-left {
+    left: 24px;
+  }
+  .loader-corner.top-right {
+    right: 24px;
+  }
+  .loader-corner.bottom-left,
+  .loader-corner.bottom-right {
+    display: none;
+  }
+  .loader-typography-stage {
+    padding: 0 24px;
+  }
+}

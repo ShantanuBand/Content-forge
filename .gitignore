@@ -1,4 +1,11 @@
 node_modules
 .env
 .env.*
+*.env
+backend/.env
 Dockerfile.dev
+*.bat
+backend/run_cmd.js
+backend/test_ai_key.js
+frontend/dist
+.DS_Store
