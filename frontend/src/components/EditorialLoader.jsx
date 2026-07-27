@@ -17,10 +17,10 @@ export default function EditorialLoader({ onComplete }) {
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    // Step timings for smooth 2.8s - 3.2s sequence
-    const t1 = setTimeout(() => setStep(1), 650);
-    const t2 = setTimeout(() => setStep(2), 1300);
-    const t3 = setTimeout(() => setStep(3), 1950);
+    // Timings for silky smooth 2.8s - 3.2s sequence
+    const t1 = setTimeout(() => setStep(1), 600);
+    const t2 = setTimeout(() => setStep(2), 1200);
+    const t3 = setTimeout(() => setStep(3), 1800);
     
     // Start exit fade-out
     const tExit = setTimeout(() => {
@@ -80,34 +80,33 @@ export default function EditorialLoader({ onComplete }) {
         </div>
 
         {/* CREATE. */}
-        {step >= 1 && (
-          <div
-            className={`loader-word-line ${
-              step === 1 ? "solid" : step > 1 ? "outlined" : "hidden"
-            }`}
-          >
-            CREATE.
-          </div>
-        )}
+        <div
+          className={`loader-word-line ${
+            step < 1 ? "hidden" : step === 1 ? "solid" : "outlined"
+          }`}
+        >
+          CREATE.
+        </div>
 
         {/* DISTRIBUTE. */}
-        {step >= 2 && (
-          <div
-            className={`loader-word-line ${
-              step === 2 ? "solid" : step > 2 ? "outlined" : "hidden"
-            }`}
-          >
-            DISTRIBUTE.
-          </div>
-        )}
+        <div
+          className={`loader-word-line ${
+            step < 2 ? "hidden" : step === 2 ? "solid" : "outlined"
+          }`}
+        >
+          DISTRIBUTE.
+        </div>
 
         {/* CONTENTFORGE. */}
-        {step >= 3 && (
-          <div className="loader-word-line contentforge-gradient">
-            CONTENTFORGE.
-          </div>
-        )}
+        <div
+          className={`loader-word-line contentforge-gradient ${
+            step < 3 ? "hidden" : "solid-gradient"
+          }`}
+        >
+          CONTENTFORGE.
+        </div>
       </div>
     </div>
   );
 }
+
