@@ -8,55 +8,27 @@ import OpenAI from "openai";
 // Dynamic topic-aware article generator fallback
 function generateTopicArticle(topic) {
   const cleanTopic = topic.trim();
-  const title = `Mastering ${cleanTopic}: A Comprehensive Guide`;
+  const title = `Understanding ${cleanTopic}: The Basics`;
 
-  const content = `## Overview of ${cleanTopic}
+  const content = `## What is ${cleanTopic}?
 
-**${cleanTopic}** is a powerful concept in modern software development and technology. Building applications with **${cleanTopic}** enables developers to create scalable, robust, and efficient solutions.
+**${cleanTopic}** is a fundamental concept, tool, or technology. Understanding the basic idea behind **${cleanTopic}** is the first step toward mastering it.
 
 ### Key Highlights & Features
 
-- 🚀 **High Efficiency**: Optimized workflows and modern architecture.
-- 🔒 **Security & Integrity**: Best practices built-in for safe deployment.
-- ⚡ **Scalability**: Designed to handle growing workloads effortlessly.
-- 🛠️ **Developer Friendly**: Clean abstractions and intuitive API design.
+- 🚀 **Purpose**: Solves specific problems and streamlines workflows.
+- 🔒 **Flexibility**: Can be adapted to various use-cases and environments.
+- ⚡ **Scalability**: Designed to handle growing workloads or complexity.
 
-### Code Demonstration
+### Why it matters
 
-Here is a practical code example illustrating **${cleanTopic}** in action:
+Learning about **${cleanTopic}** gives you a solid foundation in this domain. Whether you are building applications, analyzing systems, or exploring new methodologies, grasping this concept provides significant value.
 
-\`\`\`javascript
-// Practical Example: ${cleanTopic} Integration
-class ${cleanTopic.replace(/[^a-zA-Z0-9]/g, "") || "Content"}Service {
-  constructor(options = {}) {
-    this.name = "${cleanTopic}";
-    this.status = "ready";
-  }
+### Next Steps
 
-  async processRequest(payload) {
-    console.log(\`[${cleanTopic}] Processing request:\`, payload);
-    return {
-      success: true,
-      data: payload,
-      timestamp: new Date().toISOString()
-    };
-  }
-}
+To dive deeper, we recommend looking into official documentation, community tutorials, and practical examples specifically related to **${cleanTopic}**.
 
-// Usage
-const service = new ${cleanTopic.replace(/[^a-zA-Z0-9]/g, "") || "Content"}Service();
-service.processRequest({ topic: "${cleanTopic}" }).then(res => console.log(res));
-\`\`\`
-
-### Architectural Best Practices
-
-1. **Modular Architecture**: Keep logic decoupled for easier maintenance and testing.
-2. **Error Resilience**: Implement fallback mechanisms and clear error handling.
-3. **Continuous Monitoring**: Track key performance metrics in production.
-
-### Conclusion
-
-Integrating **${cleanTopic}** into your workflow helps unlock greater productivity and code quality. Start small, build prototypes, and iterate!`;
+*(Note: This is a fallback article generated because the AI service is currently unavailable. Please check your API keys or connection.)*`;
 
   return { title, content };
 }
@@ -70,21 +42,24 @@ export const generateAIContent = async (req, res) => {
     }
 
     const cleanTopic = topic.trim();
+    
+    const systemPrompt = "You are an expert technical content writer. Provide well-structured markdown. Explain the basic idea of the topic clearly. If the topic is a programming language (like C++, Python, etc.), provide code examples in that specific language, NEVER default to JavaScript unless the topic is JavaScript.";
+    const userPrompt = `Write a comprehensive technical article explaining the basic idea of: "${cleanTopic}". Include markdown subheadings and a relevant code example in the appropriate language.`;
 
     // 1. Try Groq API if key is present
     const groqKey = process.env.GROQ_API_KEY;
     if (groqKey && groqKey.startsWith("gsk_") && groqKey !== "dummy_key") {
       try {
         const groq = new Groq({ apiKey: groqKey });
-        const models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"];
+        const models = ["qwen/qwen3.8-27b", "groq/compound", "openai/gpt-oss-20b", "allam-2-7b"];
 
         for (const model of models) {
           try {
             const completion = await groq.chat.completions.create({
               model,
               messages: [
-                { role: "system", content: "You are an expert technical content writer. Provide well-structured markdown with code blocks." },
-                { role: "user", content: `Write a comprehensive technical article with markdown subheadings and a code example about: "${cleanTopic}".` }
+                { role: "system", content: systemPrompt },
+                { role: "user", content: userPrompt }
               ],
               temperature: 0.7
             });
@@ -99,6 +74,7 @@ export const generateAIContent = async (req, res) => {
               });
             }
           } catch (modelErr) {
+            console.warn(`[AI] Groq model ${model} failed:`, modelErr.message);
             // Try next model if one fails
           }
         }
@@ -114,7 +90,7 @@ export const generateAIContent = async (req, res) => {
         const genAI = new GoogleGenerativeAI(geminiKey);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-        const prompt = `Write a comprehensive, beginner-friendly technical markdown article with subheadings and a code snippet about "${cleanTopic}".`;
+        const prompt = `${systemPrompt}\n\n${userPrompt}`;
         const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
@@ -140,8 +116,8 @@ export const generateAIContent = async (req, res) => {
         const completion = await openai.chat.completions.create({
           model: "gpt-4o-mini",
           messages: [
-            { role: "system", content: "You are a professional content creator." },
-            { role: "user", content: `Write an informative markdown article with code snippets about "${cleanTopic}".` }
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt }
           ]
         });
 
